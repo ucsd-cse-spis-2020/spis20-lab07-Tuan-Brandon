@@ -25,7 +25,8 @@ def splitTrainTest(data, trainProp):
         output: A tuple of two lists, (training, testing)
     '''
     # TODO: You will write this function, and change the return value
-    return ([], [])
+
+    return (data[0:int(len(data)*trainProp)], data[int(len(data)*trainProp):len(data)])
 
 def formatForClassifier(dataList, label):
     ''' input: A list of documents represented as text strings
@@ -35,7 +36,7 @@ def formatForClassifier(dataList, label):
                 [format_sentence(doc), label]
     '''
     # TODO: Write this function, change the return value
-    return []
+    return [[format_sentence(dataList[i]), label] for i in range(len(dataList))]
 
 def classifyReviews():
     ''' Perform sentiment classification on movie reviews ''' 
@@ -70,11 +71,11 @@ def classifyReviews():
 
     # Train a Naive Bayes Classifier
     # Uncomment the next line once the code above is working
-    #classifier = NaiveBayesClassifier.train(training)
+    classifier = NaiveBayesClassifier.train(training)
 
     # Uncomment the next two lines once everything above is working
-    #print("Accuracy of the classifier is: " + str(accuracy(classifier, test)))
-    #classifier.show_most_informative_features()
+    print("Accuracy of the classifier is: " + str(accuracy(classifier, test)))
+    classifier.show_most_informative_features()
 
     # TODO: Calculate and print the accuracy on the positive and negative
     # documents separately
@@ -84,8 +85,22 @@ def classifyReviews():
     # classifier.classify(format_sentence("I love this movie. It was great!"))
     # will (hopefully!) return "pos"
 
-    # TODO: Print the misclassified examples
+    print("Accuracy of the classifier for positive docs: " + str(accuracy(classifier, posTest)))
+    print("Accuracy of the classifier for negative docs: " + str(accuracy(classifier, negTest)))
 
+    # TODO: Print the misclassified examples
+    false_neg = []
+    false_pos = []
+    for i in posTestText:
+        if classifier.classify(format_sentence(i)) == "neg":
+            false_neg.append(i)
+    for j in negTestText:
+        if classifier.classify(format_sentence(j)) == "pos":
+            false_pos.append(j)
+    print("False negatives: ")
+    print(false_neg)
+    print("False positives: ")
+    print(false_pos)
 
 if __name__ == "__main__":
     classifyReviews()
